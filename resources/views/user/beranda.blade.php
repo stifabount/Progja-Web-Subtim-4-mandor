@@ -8,15 +8,6 @@
                 <div class="text-center">
                     <h2 class="text-banner-h2">Selamat Datang di</h2>
                     <h2 class="text-banner-h1">Website Desa Perapakan</h2>
-                    @php
-                        function youtubeEmbed($url) {
-                            return preg_replace(
-                                "/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/",
-                                "https://www.youtube.com/embed/$1",
-                                $url
-                            );
-                        }
-                    @endphp
                 </div>
             </div>
         </div>
@@ -60,7 +51,14 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="ratio ratio-16x9 shadow-sm rounded">
-                        <iframe width="560" height="315" src=""{{ youtubeEmbed($profiledesa->link_video_profile)}}"" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        @php
+    
+                        // Ubah watch?v= jadi embed/
+                        $embedUrl = str_replace("watch?v=", "embed/", $profiledesa->link_video_profile);
+
+                        @endphp
+
+                        <iframe width="560" height="315" src="{{ $embedUrl }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>
