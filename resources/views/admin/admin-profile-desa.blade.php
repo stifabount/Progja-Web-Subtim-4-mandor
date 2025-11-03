@@ -103,6 +103,20 @@
                                             </div>
 
                                             <!-- Misi Desa -->
+                                            <!-- Link Video Profil Desa -->
+                                            <div class="form-group row mb-3">
+                                                <label class="col-lg-2 col-md-3 col-sm-4 form-label">Link Video Profil:</label>
+                                                <div class="col-lg-10 col-md-9 col-sm-8">
+                                                    <input type="text"
+                                                        name="link_video_profile"
+                                                        class="form-control"
+                                                        placeholder="https://www.youtube.com/watch?v=..."
+                                                        value="{{ $profiledesa->link_video_profile ?? '' }}">
+                                                </div>
+                                            </div>
+
+                                            
+                                            <!-- Link Video Profil Desa -->
                                             <div class="form-group row mb-3">
                                                 <label for="misiDesa" class="col-lg-2 col-md-3 col-sm-4 form-label">Misi
                                                     Desa:</label>
