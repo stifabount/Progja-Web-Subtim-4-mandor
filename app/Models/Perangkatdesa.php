@@ -13,6 +13,5 @@ class Perangkatdesa extends Model
         'nama',
         'jabatan',
         'gambar_perangkatdesa',
-        'link_video_profile',
     ];
 }
