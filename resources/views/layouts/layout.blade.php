@@ -26,11 +26,11 @@
         <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark fixed-top navbar-transparent">
             <div class="container-fluid">
                 <a class="navbar-brand ms-3 d-flex align-items-center" href="/">
-                    <img src="{{ asset('image/Sambas Logo.png') }}" width="40" class="me-3"
-                        alt="Logo of Desa Parapakan">
+                    <img id="logo" src="{{ asset('image/Sambas Logo.png') }}" width="40" class="me-3"
+                        alt="Logo">
                     <span class="logo-text d-flex flex-column">
-                        <strong>Desa Perapakan</strong>
-                        <small>Kecamatan Pemangkat</small>
+                        <strong class="nama_desa">Desa Perapakan</strong>
+                        <small class="nama_kecamatan">Kecamatan Pemangkat</small>
                     </span>
                 </a>
 
@@ -144,7 +144,7 @@
             </div>
             <hr class="bg-light">
             <div class="text-center">
-                <p class="mb-0">Copyright &copy; 2024 Desa Perapakan. All rights reserved.</p>
+                <p class="mb-0">Copyright &copy; {{ date('Y') }} <span id="nama_desa"></span> All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -159,67 +159,132 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    @yield('kodejsenduser')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const navbar = document.getElementById('mainNavbar');
+   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const navbar = document.getElementById('mainNavbar');
 
-            // Update the navbar class based on scroll position
-            const updateNavbarTransparency = () => {
-                if (window.scrollY === 0) {
-                    navbar.classList.add('navbar-transparent');
-                    navbar.classList.remove('navbar-solid');
-                } else {
-                    navbar.classList.add('navbar-solid');
-                    navbar.classList.remove('navbar-transparent');
-                }
-            };
+        // Navbar transparency toggle
+        const updateNavbarTransparency = () => {
+            if (window.scrollY === 0) {
+                navbar.classList.add('navbar-transparent');
+                navbar.classList.remove('navbar-solid');
+            } else {
+                navbar.classList.add('navbar-solid');
+                navbar.classList.remove('navbar-transparent');
+            }
+        };
+        updateNavbarTransparency();
+        window.addEventListener('scroll', updateNavbarTransparency);
 
-            // Initial check and attach scroll listener
-            updateNavbarTransparency();
-            window.addEventListener('scroll', updateNavbarTransparency);
-        });
-
-        // Fungsi untuk mengecek posisi elemen dan menambahkan kelas 'show'
-        function checkPosition() {
-            const containers = document.querySelectorAll('.transition-container');
-
-            containers.forEach(container => {
+        // Scroll reveal animation
+        const checkPosition = () => {
+            document.querySelectorAll('.transition-container').forEach(container => {
                 const containerPosition = container.getBoundingClientRect().top;
                 const screenPosition = window.innerHeight / 1.2;
-
                 if (containerPosition < screenPosition) {
                     container.classList.add('show');
                 }
             });
+        };
+        document.addEventListener('scroll', checkPosition);
+        checkPosition();
+
+        // Animated counter
+        document.querySelectorAll(".counter").forEach(counter => {
+            const updateCounter = () => {
+                const target = +counter.getAttribute("data-target");
+                const count = +counter.innerText;
+                const increment = target / 400;
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + increment);
+                    setTimeout(updateCounter, 10);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            updateCounter();
+        });
+
+        // ==========================
+        // CONFIG CACHE HANDLING
+        // ==========================
+
+        const cached = sessionStorage.getItem('site_config');
+        if (cached) {
+            const data = JSON.parse(cached);
+            applyConfig(data);
+
+            // Optional refresh if admin updated
+            fetch('/config')
+                .then(res => res.json())
+                .then(latest => {
+                    if (!data.version || latest.version !== data.version) {
+                        sessionStorage.setItem('site_config', JSON.stringify(latest));
+                        applyConfig(latest);
+                    }
+                })
+                .catch(err => console.error('Config fetch error:', err));
+        } else {
+            fetch('/config')
+                .then(res => res.json())
+                .then(data => {
+                    sessionStorage.setItem('site_config', JSON.stringify(data));
+                    applyConfig(data);
+                })
+                .catch(err => console.error('Config fetch error:', err));
         }
 
-        document.addEventListener('scroll', checkPosition);
-        window.onload = checkPosition;
+    });
 
-        // untuk menjalankan counter
-        document.addEventListener("DOMContentLoaded", function() {
-            const counters = document.querySelectorAll(".counter");
+    async function applyConfig(config) {
+        const { colors, images, texts } = config;
 
-            counters.forEach(counter => {
-                const updateCounter = () => {
-                    const target = +counter.getAttribute("data-target");
-                    const count = +counter.innerText;
+        // Apply colors
+        if (colors) {
+            document.documentElement.style.setProperty('--pr-color','rgb(' + colors.pr_color + ')');
+            document.documentElement.style.setProperty('--sec-color','rgb(' + colors.sec_color + ')');
+            document.documentElement.style.setProperty('--third-color','rgb(' + colors.third_color + ')');
+            document.documentElement.style.setProperty('--base-color','rgb(' + colors.base_color + ')');
+        }
 
-                    const increment = target / 400;
+        // Apply images
+        const logoEl = document.getElementById('logo');
+        if (images && logoEl) logoEl.src = images.logo_path;
 
-                    if (count < target) {
-                        counter.innerText = Math.ceil(count + increment);
-                        setTimeout(updateCounter, 10);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
+        // Apply texts
+        document.querySelectorAll('.nama_desa').forEach(el => el.textContent = texts?.nama_desa ?? 'Desa Default');
+        document.querySelectorAll('.nama_kecamatan').forEach(el => el.textContent = texts?.nama_kecamatan ?? 'Kecamatan Default');
 
-                updateCounter();
-            });
-        });
-    </script>
+        // Footer text if exists
+        const footerNama = document.getElementById('nama_desa');
+        if (footerNama && texts) footerNama.textContent = texts.nama_desa;
+    }
+
+    async function loadConfig() {
+        const cached = sessionStorage.getItem('site_config');
+        if (cached) {
+            const data = JSON.parse(cached);
+            applyConfig(data);
+        }
+
+        try {
+            const res = await fetch('/config');
+            const latest = await res.json();
+
+            // Update cache if new version
+            if (!cached || JSON.parse(cached).version !== latest.version) {
+                sessionStorage.setItem('site_config', JSON.stringify(latest));
+                applyConfig(latest);
+            }
+        } catch (err) {
+            console.error('Config fetch error:', err);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadConfig);
+</script>
+    @yield('kodejsenduser')
+
 </body>
 
 </html>

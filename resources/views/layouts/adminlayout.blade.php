@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Desa Perapakan</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="{{ asset('/css/style.css') }}">
     <link rel="icon" type="image/png" href="{{ asset('/image/Sambas Logo compress 300x300.png') }}">
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Inter:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@400;700&family=Lato:wght@400;700&display=swap"
@@ -21,10 +21,20 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-bs5.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
+    <link rel="stylesheet" href="{{asset('libs/sweetalert2/sweetalert2.min.css')}}">
+    <link rel="stylesheet" href="{{asset('libs/dropify/dropify.min.css')}}">
 
     @yield('kodeatas')
     <style>
+        :root {
+        --pr-color: {{ session('primary_color', 'rgb(40, 106, 89)') }} !important;
+        --sec-color: {{ session('secondary_color', 'rgb(255, 215, 0)') }} !important;
+        --trd-color: {{ session('third_color', 'rgb(248, 249, 250)') }} !important;
+        --base-color: {{ session('base_color', 'rgb(40, 106, 89)') }} !important;
+        --pr-font: 'Poppins', sans-serif;
+        --sec-font: 'Montserrat', sans-serif;
+        --trd-font: 'Lato', sans-serif;
+        }
         *,
         ::after,
         ::before {
@@ -80,32 +90,39 @@
             <!-- Content fo Sidebar -->
             <div class="h100">
                 <div class="sidebar-logo collapsed-icon">
-                    <a href="#">Desa Perapakan</a>
+                    <a href="#">{{session('nama_desa', 'Desa PMKM UNTAN')}}</a>
                 </div>
                 <ul class="sidebar-nav">
                     <li class="sidebar-item">
-                        <a href="admin" class="sidebar-link {{ Request::is('admin*') ? 'active' : '' }}"
+                        <a href="{{route('admin.base-color')}}" class="sidebar-link {{ Request::is('admin/base-color*') ? 'active' : '' }}"
+                            id="admin-base-color">
+                            <i class="fa-solid fa-palette pe-2"></i>
+                            <span class="link-text">Konfigurasi Dasar</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin" class="sidebar-link {{ Request::is('admin') ? 'active' : '' }}"
                             id="admin-dashboard">
                             <i class="fa-solid fa-list pe-2"></i>
                             <span class="link-text">Dashboard</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="profildesa" class="sidebar-link {{ Request::is('profildesa*') ? 'active' : '' }}"
+                        <a href="/profildesa" class="sidebar-link {{ Request::is('profildesa*') ? 'active' : '' }}"
                             id="admin-profile-desa">
                             <i class="fa-solid fa-id-card pe-2"></i>
                             <span class="link-text">Profile Desa</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="perangkatdesa" class="sidebar-link {{ Request::is('perangkatdesa*') ? 'active' : '' }}"
+                        <a href="/perangkatdesa" class="sidebar-link {{ Request::is('perangkatdesa*') ? 'active' : '' }}"
                             id="admin-perangkat-desa">
                             <i class="fa-solid fa-user-tie pe-2"></i>
                             <span class="link-text">Perangkat Desa</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="lembagadesa"
+                        <a href="/lembagadesa"
                             class="sidebar-link {{ Request::is('lembagadesa*') ? 'active' : '' }}"
                             id="admin-lembaga-desa">
                             <i class="fa-solid fa-landmark pe-2"></i>
@@ -113,7 +130,7 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="layananpublik"
+                        <a href="/layananpublik"
                             class="sidebar-link {{ Request::is('layananpublik*') ? 'active' : '' }}"
                             id="admin-layanan-publik">
                             <i class="fa-solid fa-hands-helping pe-2"></i>
@@ -121,7 +138,7 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="layananadministrasi"
+                        <a href="/layananadministrasi"
                             class="sidebar-link {{ Request::is('layananadministrasi*') ? 'active' : '' }}"
                             id="admin-layanan-administrasi">
                             <i class="fa-solid fa-file-signature pe-2"></i>
@@ -129,21 +146,21 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="pengumuman" class="sidebar-link {{ Request::is('pengumuman*') ? 'active' : '' }}"
+                        <a href="/pengumuman" class="sidebar-link {{ Request::is('pengumuman*') ? 'active' : '' }}"
                             id="admin-pengumuman">
                             <i class="fa-solid fa-bullhorn pe-2"></i>
                             <span class="link-text">Pengumuman</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="kegiatan" class="sidebar-link {{ Request::is('kegiatan*') ? 'active' : '' }}"
+                        <a href="/kegiatan" class="sidebar-link {{ Request::is('kegiatan*') ? 'active' : '' }}"
                             id="admin-kegiatan">
                             <i class="fa-solid fa-calendar-day pe-2"></i>
                             <span class="link-text">Kegiatan</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="kontak" class="sidebar-link {{ Request::is('kontak*') ? 'active' : '' }}"
+                        <a href="/kontak" class="sidebar-link {{ Request::is('kontak*') ? 'active' : '' }}"
                             id="admin-kontak">
                             <i class="fa-solid fa-address-book pe-2"></i>
                             <span class="link-text">Kontak</span>
@@ -198,6 +215,8 @@
 
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="{{asset('libs/sweetalert2/sweetalert2.min.js')}}"></script>
+    <script src="{{asset('libs/dropify/dropify.min.js')}}"></script>
     @yield('kodejs')
     <script>
         const sidebarToggle = document.querySelector("#sidebar-toggle");
