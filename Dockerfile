@@ -38,9 +38,9 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 # Port default Apache
 EXPOSE 80
 
-# Tambahkan healthcheck agar mudah monitor container
-HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost/ || exit 1
+# # Tambahkan healthcheck agar mudah monitor container
+# HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+#   CMD curl -f http://localhost/ || exit 1
 
 # Jalankan Apache
 CMD ["apache2-foreground"]
