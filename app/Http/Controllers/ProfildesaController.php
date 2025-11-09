@@ -62,6 +62,7 @@ class ProfildesaController
             // 'gambar_profiledesa'=>'image',
             'visi_desa' => 'required',
             'misi_desa' => 'required',
+            'link_video_profile' => 'required', 
             
             'total_jiwa' => 'required',
             'total_kk' => 'required',

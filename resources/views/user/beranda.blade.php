@@ -51,7 +51,26 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="ratio ratio-16x9 shadow-sm rounded">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/QDBWsQHC-6U?si=2GcKONhUCsocZXiF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        @php
+                        function youtubeEmbed($url) {
+                            // Untuk format YouTube short dan biasa
+                            if (str_contains($url, 'youtu.be')) {
+                                return preg_replace(
+                                    "/(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]+)/",
+                                    "https://www.youtube.com/embed/$1",
+                                    $url
+                                );
+                            }
+
+                            return preg_replace(
+                                "/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/",
+                                "https://www.youtube.com/embed/$1",
+                                $url
+                            );
+                        }
+                        @endphp
+
+                        <iframe width="560" height="315" src="{{youtubeEmbed($profiledesa->link_video_profile)}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>

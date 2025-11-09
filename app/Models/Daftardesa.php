@@ -10,6 +10,6 @@ class Daftardesa extends Model
     /** @use HasFactory<\Database\Factories\DaftardesaFactory> */
     use HasFactory;
     protected $fillable = [
-        'nama_desa','gambar_desa'
+        'nama_desa','gambar_desa',
     ];
 }
