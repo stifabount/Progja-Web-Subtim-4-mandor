@@ -73,13 +73,15 @@
         .toast {
             border-radius: 15px !important;
         }
-
+        .text-center{
+            text-align: center !important;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <img src="{{ asset('image/Sambas Logo.png') }}" alt="Logo Kecamatan">
-        <h2>Desa Perapakan </h2>
+        <img alt="Logo Kecamatan" class="logo" id="logo">
+        <h2 class="nama_kecamatan">{{session('nama_kecamatan')}}</h2>
         <form action="/adminlogin" method="POST">
             @csrf
             <!-- Username Field -->
@@ -89,6 +91,9 @@
             <!-- Password Field -->
             <div class="form-group">
                 <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+            <div class="text-small text-center">
+                Reset Password? <a href="https://wa.me/6285750139209">Tekan Disini</a>
             </div>
             <!-- Submit Button -->
             <button type="submit" class="btn btn-submit w-100">Login</button>
@@ -111,7 +116,81 @@
             @elseif (session('info'))
                 toastr.info("{{ session('info') }}");
             @endif
+
+            const cached = sessionStorage.getItem('site_config');
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    applyConfig(data);
+
+                    // Optional refresh if admin updated
+                    fetch('/config')
+                        .then(res => res.json())
+                        .then(latest => {
+                            if (!data.version || latest.version !== data.version) {
+                                sessionStorage.setItem('site_config', JSON.stringify(latest));
+                                applyConfig(latest);
+                            }
+                        })
+                        .catch(err => console.error('Config fetch error:', err));
+                } else {
+                    fetch('/config')
+                        .then(res => res.json())
+                        .then(data => {
+                            sessionStorage.setItem('site_config', JSON.stringify(data));
+                            applyConfig(data);
+                        })
+                        .catch(err => console.error('Config fetch error:', err));
+                }
+
+                async function applyConfig(config) {
+                    const { colors, images, texts } = config;
+
+                    // Apply colors
+                    if (colors) {
+                        document.documentElement.style.setProperty('--pr-color','rgb(' + colors.pr_color + ')');
+                        document.documentElement.style.setProperty('--sec-color','rgb(' + colors.sec_color + ')');
+                        document.documentElement.style.setProperty('--third-color','rgb(' + colors.third_color + ')');
+                        document.documentElement.style.setProperty('--base-color','rgb(' + colors.base_color + ')');
+                    }
+
+                    // Apply images
+                    const logoEl = document.getElementById('logo');
+                    if (images && logoEl) logoEl.src = images.logo_path;
+
+                    // Apply texts
+                    document.querySelectorAll('.nama_desa').forEach(el => el.textContent = texts?.nama_desa ?? 'Desa Default');
+                    document.querySelectorAll('.nama_kecamatan').forEach(el => el.textContent = texts?.nama_kecamatan ?? 'Kecamatan Default');
+
+                    // Footer text if exists
+                    const footerNama = document.getElementById('nama_desa');
+                    if (footerNama && texts) footerNama.textContent = texts.nama_desa;
+                }
+
+            async function loadConfig() {
+                const cached = sessionStorage.getItem('site_config');
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    applyConfig(data);
+                }
+
+                try {
+                    const res = await fetch('/config');
+                    const latest = await res.json();
+
+                    // Update cache if new version
+                    if (!cached || JSON.parse(cached).version !== latest.version) {
+                        sessionStorage.setItem('site_config', JSON.stringify(latest));
+                        applyConfig(latest);
+                    }
+                } catch (err) {
+                    console.error('Config fetch error:', err);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', loadConfig);
         });
+        
     </script>
+
 </body>
 </html>

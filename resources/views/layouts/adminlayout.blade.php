@@ -71,7 +71,16 @@
         h5 {
             font-weight: bold;
         }
-
+        .footer{
+            max-width: 100%;
+            margin: 0;
+            
+            font-size: 20px;
+            margin-bottom: 0 !important;
+        }
+        .footer p{
+            margin-bottom: 0 !important;
+        }
         /* .bs-sn ol{
             
             list-style-type: decimal;
@@ -208,6 +217,9 @@
             @yield('child')
             {{-- sampai sini --}}
         </div>
+    </div>
+    <div class="footer text-center container bg-dark p-0" style="position: sticky;">
+        <p>Copyright &copy; PMKM IF UNTAN 2025 All Rights Reserved , Bantuan <a href=""></a></p>
     </div>
 
 
