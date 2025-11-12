@@ -96,3 +96,9 @@ Route::resource('/kegiatan', KelolakegiatanController::class)->middleware('auth'
 Route::resource('/kontak', KelolakontakController::class)->middleware('auth');
 Route::resource('/strukturperangkatdesa', StrukturperangkatdesaController::class)->middleware('auth');
 Route::resource('/daftardesa', DaftardesaController::class)->middleware('auth');
+
+Route::prefix('admin')->middleware('auth')->group(function () {
+    @include 'admin.php';
+});
+
+Route::get('/config', [App\Http\Controllers\ConfigController::class, 'config']);
