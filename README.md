@@ -1,7 +1,7 @@
 ## Hi there 👋
 TEST
 
-![My cool banner](https://i.redd.it/hituvwjkdee91.png)
+<img src="https://i.redd.it/hituvwjkdee91.png" width="40%" alt="Profile banner" />
 <!--
 **stifabount/stifabount** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
