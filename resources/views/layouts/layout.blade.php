@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desa Perapakan</title>
+    <title id="page_title">Desa Perapakan</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="icon" type="image/png" href="{{ asset('/image/Sambas Logo compress 300x300.png') }}">
     <link
@@ -253,6 +253,10 @@
         // Apply texts
         document.querySelectorAll('.nama_desa').forEach(el => el.textContent = texts?.nama_desa ?? 'Desa Default');
         document.querySelectorAll('.nama_kecamatan').forEach(el => el.textContent = texts?.nama_kecamatan ?? 'Kecamatan Default');
+        
+        // Update page title
+        const pageTitle = document.getElementById('page_title');
+        if (pageTitle && texts) pageTitle.textContent = texts.nama_desa ?? 'Desa Default';
 
         // Footer text if exists
         const footerNama = document.getElementById('nama_desa');
