@@ -1,5 +1,7 @@
 ## Hi there 👋
-- TEST
+TEST
+
+![My cool banner](https://a0.anyrgb.com/pngimg/326/780/list-of-touhou-project-characters-reimu-hakurei-touhou-project-pixiv-yuri-otaku-chibi-fan-fan-art-cat.png)
 <!--
 **stifabount/stifabount** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
